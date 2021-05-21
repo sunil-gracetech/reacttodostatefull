@@ -9,6 +9,7 @@ class Employee extends React.Component
     
     constructor(){
         super()
+        
         this.state={
            employees:[
                {'id':1,'name':"ajay sharma",'age':23,'gender':"male"},
@@ -17,15 +18,30 @@ class Employee extends React.Component
                {'id':4,'name':"rohit verma",'age':28,'gender':"male"},
                {'id':5,'name':"Arjun kumar",'age':33,'gender':"male"}
            ],
-            message:"welcome to employee state"
+            message:"welcome to employee state",
+            employeeEdit:null
         }
 
        // this.addemployee=this.addemployee.bind(this)
     }
     addemployee=(obj)=>{
+       // console.log(obj)
+        if(obj.id===null)
+        {
+        obj.id=this.state.employees[this.state.employees.length-1].id+1
         var emp=this.state.employees;
         emp.push(obj)
         this.setState({employees:emp})
+        }
+        else{
+            var employee=this.state.employees.filter((e)=>e.id==obj.id);
+             let index=this.state.employees.indexOf(employee[0]);
+             let emps=this.state.employees;
+             emps.splice(index,1,obj);
+              this.setState({employees:emps})
+        }
+
+    
     }
     deleteRecord=(index)=>{
        // event.preventDefault();
@@ -46,15 +62,14 @@ class Employee extends React.Component
         //pp.style.backgroundColor="orange"
        findDOMNode(pp).className="bgs"
     }
+    editRecord=(emp)=>{
+       // console.log(emp)
+        this.setState({employeeEdit:emp})
+    }
     render(){
         let rd=Math.random();
-        return <div>
-            <h3>Random : {rd}</h3>
-            <button onClick={this.updateDOM}>Update DOM</button>
-            <hr/>
-            <p id="pp">Welcome to React Js . we will learn about react and its API</p>
-            <button onClick={this.changeBg}>Change Bg</button>
-            <EmployeeForm postData={this.addemployee} />       
+        return <React.Fragment>
+            <EmployeeForm postData={this.addemployee} emp={this.state.employeeEdit} />       
             <div className="card-panel">
                 <table className="table">
                 <thead>
@@ -68,13 +83,13 @@ class Employee extends React.Component
                 </thead>
                 <tbody>
                 {
-                this.state.employees.map((n,i)=>{return <EmployeeCard employee={n} index={i} key={i} postIndex={this.deleteRecord} />
+                this.state.employees.map((n,i)=>{return <EmployeeCard employee={n} index={i} key={i} postIndex={this.deleteRecord}  PostIndexEdit={this.editRecord}/>
                 })
             }
             </tbody>
             </table>
             </div>
-        </div>
+        </React.Fragment>
     }
 }
 
